@@ -35,11 +35,11 @@ const es = {
   },
   home: {
     eyebrow: 'Caviahue · Neuquén · Patagonia',
-    title: 'Caminar la montaña con quien la conoce de memoria',
+    title: 'Me enamoré de Caviahue. La montaña hizo el resto.',
     subtitle:
-      'Trekking, raquetas de nieve y esquí de fondo entre volcanes, araucarias y lagunas. Salidas guiadas por Josefina Cabral en Caviahue y Copahue.',
+      'Hace 24 años que vivo acá. Recorro estas montañas en cada estación y quiero compartir con vos sus senderos, paisajes y secretos.',
     primary: 'Ver excursiones',
-    secondary: 'Conocer a Josefina',
+    secondary: 'Un poco más sobre mí',
     featuredTitle: 'Las más elegidas',
     featuredSubtitle: 'Once experiencias entre cráteres activos, riscos de ceniza y bosques milenarios.',
     seasonsTitle: 'Dos Caviahue en un mismo año',
@@ -154,11 +154,11 @@ const en: Dict = {
   },
   home: {
     eyebrow: 'Caviahue · Neuquén · Patagonia',
-    title: 'Walk the mountain with someone who knows it by heart',
+    title: 'I fell in love with Caviahue. The mountains did the rest.',
     subtitle:
-      'Trekking, snowshoeing and cross-country skiing among volcanoes, araucaria forests and lakes. Guided trips with Josefina Cabral in Caviahue and Copahue.',
-    primary: 'See excursions',
-    secondary: 'Meet Josefina',
+      "I've lived here for 24 years. I explore these mountains in every season, and I want to share their trails, landscapes, and hidden gems with you.",
+    primary: 'Explore excursions',
+    secondary: 'A little about me',
     featuredTitle: 'Guests’ favourites',
     featuredSubtitle: 'Eleven experiences among active craters, volcanic ash ridges and ancient forests.',
     seasonsTitle: 'Two Caviahues in a single year',
