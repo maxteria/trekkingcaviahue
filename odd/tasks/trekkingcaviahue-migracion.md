@@ -80,3 +80,9 @@ Branch: `main` (repo nuevo). Deploy: Cloudflare Pages. Runner: `npm run build` (
 - Tipo `Dict` corregido: se quitó `as const` del diccionario ES para que las traducciones EN no queden restringidas a literales.
 - QA estructural sobre HTML construido: 11 tarjetas con `data-*`, 3 grupos de filtro, contador y estado vacío presentes; 9 ítems de galería y `<dialog>` en ficha; OG por ficha apunta a un asset real de `/_astro/`; hreflang/canonical correctos; CSS contiene `.container-page`, `.prose-trek` y todos los tokens usados.
 - Pendiente de QA visual en navegador real (dev server OK en `http://localhost:4325/`, todas las rutas responden 200): revisar hero, mosaico, filtros, lightbox, menú móvil y contraste.
+
+### L6 — Repositorio
+
+- `git init -b main` y primer commit `caddf77` — `feat: migrate trekkingcaviahue.ar to a bilingual Astro catalog`.
+- 189 archivos versionados (8.606 líneas); `_backup/`, el ZIP original, `dist/`, `.astro/` y `node_modules/` quedan ignorados.
+- Sin remoto configurado todavía; el deploy en Cloudflare Pages requiere crear el repositorio en GitHub y autorizar el push.
