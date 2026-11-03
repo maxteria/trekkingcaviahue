@@ -19,10 +19,23 @@
 <script>
   const root = document.documentElement;
 
-  document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+  const syncValueLabels = () => {
+    const isDark = root.classList.contains('dark');
+    document.querySelectorAll<HTMLElement>('[data-theme-value]').forEach((el) => {
+      el.textContent = isDark
+        ? (el.dataset.dark ?? 'dark')
+        : (el.dataset.light ?? 'light');
+    });
+  };
+
+  // Initialize on load so label matches stored/system preference
+  syncValueLabels();
+
+  document.querySelectorAll('[data-theme-toggle], [data-theme-toggle-row]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const isDark = root.classList.toggle('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      syncValueLabels();
     });
   });
 </script>

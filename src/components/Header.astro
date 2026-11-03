@@ -125,13 +125,21 @@ const otherLocale = locale === 'es' ? 'en' : 'es';
             {locale === 'es' ? 'Configuración' : 'Settings'}
           </div>
 
-          {/* Theme toggle */}
-          <div class="flex items-center justify-between gap-2 px-1 py-1">
-            <span class="text-sm font-medium text-ink-700">
-              {locale === 'es' ? 'Tema' : 'Theme'}
-            </span>
-            <ThemeToggle />
-          </div>
+          {/* Theme — same row pattern as language: lowercase label left, value right */}
+          <button
+            type="button"
+            data-theme-toggle-row
+            class="flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium text-ink-700 transition-colors hover:bg-cream-200"
+            aria-label={locale === 'es' ? 'Cambiar tema' : 'Toggle theme'}
+          >
+            <span>{locale === 'es' ? 'tema' : 'theme'}</span>
+            <span
+              class="text-xs font-semibold uppercase tracking-wider text-brand-600"
+              data-theme-value
+              data-light={locale === 'es' ? 'Claro' : 'Light'}
+              data-dark={locale === 'es' ? 'Oscuro' : 'Dark'}
+            >Claro</span>
+          </button>
 
           {/* Language */}
           <a
@@ -141,7 +149,7 @@ const otherLocale = locale === 'es' ? 'en' : 'es';
             class="flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium text-ink-700 transition-colors hover:bg-cream-200"
             aria-label={locale === 'es' ? 'Switch to English' : 'Cambiar a español'}
           >
-            <span>{locale === 'es' ? 'Idioma' : 'Language'}</span>
+            <span>{locale === 'es' ? 'idioma' : 'language'}</span>
             <span class="text-xs font-semibold uppercase tracking-wider text-brand-600">
               {locale === 'es' ? 'EN' : 'ES'}
             </span>
