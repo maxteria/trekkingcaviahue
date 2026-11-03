@@ -3,7 +3,6 @@ import { Image } from 'astro:assets';
 import logo from '../assets/brand/logo.png';
 import { ROUTES, SITE, whatsappLink } from '../data/site';
 import { t, type Locale } from '../data/ui';
-import ThemeToggle from './ThemeToggle.astro';
 
 interface Props {
   locale: Locale;
@@ -58,17 +57,49 @@ const otherLocale = locale === 'es' ? 'en' : 'es';
     </nav>
 
     <div class="flex items-center gap-2">
-      {/* Desktop: theme toggle + lang switch visible directly */}
-      <ThemeToggle />
-      <a
-        href={alternatePath}
-        hreflang={otherLocale}
-        lang={otherLocale}
-        class="hidden rounded-full border border-cream-300 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700 md:inline-block"
-        aria-label={locale === 'es' ? 'Switch to English' : 'Cambiar a español'}
-      >
-        {locale === 'es' ? 'EN' : 'ES'}
-      </a>
+      {/* Desktop: gear icon opens settings dropdown (theme + language) */}
+      <details class="relative hidden md:block" data-desktop-settings>
+        <summary
+          class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-cream-300 text-ink-800 transition-colors hover:border-brand-300 dark:border-cream-400 dark:text-ink-100"
+          aria-label={locale === 'es' ? 'Configuración' : 'Settings'}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </summary>
+        <div class="absolute right-0 top-12 w-48 rounded-2xl border border-cream-300 bg-cream-50 p-2 shadow-lift dark:bg-cream-100">
+          {/* Theme — lowercase label left, value right */}
+          <button
+            type="button"
+            data-theme-toggle-row
+            class="flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium text-ink-700 transition-colors hover:bg-cream-200"
+            aria-label={locale === 'es' ? 'Cambiar tema' : 'Toggle theme'}
+          >
+            <span>{locale === 'es' ? 'tema' : 'theme'}</span>
+            <span
+              class="text-xs font-semibold uppercase tracking-wider text-brand-600"
+              data-theme-value
+              data-light={locale === 'es' ? 'Claro' : 'Light'}
+              data-dark={locale === 'es' ? 'Oscuro' : 'Dark'}
+            >Claro</span>
+          </button>
+
+          {/* Language */}
+          <a
+            href={alternatePath}
+            hreflang={otherLocale}
+            lang={otherLocale}
+            class="flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium text-ink-700 transition-colors hover:bg-cream-200"
+            aria-label={locale === 'es' ? 'Switch to English' : 'Cambiar a español'}
+          >
+            <span>{locale === 'es' ? 'idioma' : 'language'}</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-brand-600">
+              {locale === 'es' ? 'EN' : 'ES'}
+            </span>
+          </a>
+        </div>
+      </details>
 
       <a
         href={waHref}
@@ -173,15 +204,15 @@ const otherLocale = locale === 'es' ? 'en' : 'es';
 </header>
 
 <script>
-  const settings = document.querySelector<HTMLDetailsElement>('[data-mobile-settings]');
+  const dropdowns = document.querySelectorAll<HTMLDetailsElement>('[data-mobile-settings], [data-desktop-settings]');
 
-  if (settings) {
+  dropdowns.forEach((dropdown) => {
     document.addEventListener('click', (event) => {
-      if (settings.open && !settings.contains(event.target as Node)) settings.open = false;
+      if (dropdown.open && !dropdown.contains(event.target as Node)) dropdown.open = false;
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') settings.open = false;
+      if (event.key === 'Escape') dropdown.open = false;
     });
-  }
+  });
 </script>
