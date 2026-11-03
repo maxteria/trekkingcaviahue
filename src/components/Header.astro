@@ -58,12 +58,13 @@ const otherLocale = locale === 'es' ? 'en' : 'es';
     </nav>
 
     <div class="flex items-center gap-2">
+      {/* Desktop: theme toggle + lang switch visible directly */}
       <ThemeToggle />
       <a
         href={alternatePath}
         hreflang={otherLocale}
         lang={otherLocale}
-        class="rounded-full border border-cream-300 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
+        class="hidden rounded-full border border-cream-300 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700 md:inline-block"
         aria-label={locale === 'es' ? 'Switch to English' : 'Cambiar a español'}
       >
         {locale === 'es' ? 'EN' : 'ES'}
@@ -83,36 +84,69 @@ const otherLocale = locale === 'es' ? 'en' : 'es';
         WhatsApp
       </a>
 
-      <details class="relative md:hidden">
+      {/* Mobile: gear button opens settings panel */}
+      <details class="relative md:hidden" data-mobile-settings>
         <summary
-          class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-cream-300 text-ink-800 transition-colors hover:border-brand-300"
-          aria-label={locale === 'es' ? 'Abrir menú' : 'Open menu'}
+          class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-cream-300 text-ink-800 transition-colors hover:border-brand-300 dark:border-cream-400 dark:text-ink-100"
+          aria-label={locale === 'es' ? 'Configuración' : 'Settings'}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true">
-            <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"></path>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </svg>
         </summary>
-        <div class="absolute right-0 top-12 w-56 rounded-2xl border border-cream-300 bg-cream-50 p-2 shadow-lift">
-          {
-            links.map((link) => (
-              <a
-                href={link.href}
-                aria-current={isActive(link.href) ? 'page' : undefined}
-                class:list={[
-                  'block rounded-xl px-4 py-2.5 text-sm font-medium',
-                  isActive(link.href) ? 'bg-brand-50 text-brand-700' : 'text-ink-700 hover:bg-cream-200',
-                ]}
-              >
-                {link.label}
-              </a>
-            ))
-          }
+        <div class="absolute right-0 top-12 w-48 rounded-2xl border border-cream-300 bg-cream-50 p-3 shadow-lift dark:bg-cream-100">
+          {/* Navigation links */}
+          <div class="space-y-0.5">
+            {
+              links.map((link) => (
+                <a
+                  href={link.href}
+                  aria-current={isActive(link.href) ? 'page' : undefined}
+                  class:list={[
+                    'block rounded-xl px-3.5 py-2.5 text-sm font-medium',
+                    isActive(link.href) ? 'bg-brand-50 text-brand-700' : 'text-ink-700 hover:bg-cream-200',
+                  ]}
+                >
+                  {link.label}
+                </a>
+              ))
+            }
+          </div>
+
+          {/* Divider */}
+          <div class="my-2 h-px bg-cream-300"></div>
+
+          {/* Settings row: theme + lang */}
+          <div class="flex items-center justify-between gap-2 px-1 py-1">
+            <span class="text-xs font-semibold uppercase tracking-[0.12em] text-ink-500">
+              {locale === 'es' ? 'Tema' : 'Theme'}
+            </span>
+            <ThemeToggle />
+          </div>
+
+          <a
+            href={alternatePath}
+            hreflang={otherLocale}
+            lang={otherLocale}
+            class="mt-1 flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium text-ink-700 transition-colors hover:bg-cream-200"
+            aria-label={locale === 'es' ? 'Switch to English' : 'Cambiar a español'}
+          >
+            <span>{locale === 'es' ? 'Idioma' : 'Language'}</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-brand-600">
+              {locale === 'es' ? 'EN' : 'ES'}
+            </span>
+          </a>
+
           <a
             href={waHref}
             target="_blank"
             rel="noopener noreferrer"
-            class="mt-1 block rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white"
+            class="mt-2 flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white"
           >
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="h-4 w-4">
+              <path d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.42 1.27 4.86L2 22l5.3-1.32a9.9 9.9 0 0 0 4.74 1.2h.01c5.5 0 9.96-4.46 9.96-9.96S17.54 2 12.04 2Zm5.8 14.15c-.24.68-1.4 1.3-1.94 1.35-.5.05-.97.24-3.26-.68-2.76-1.09-4.5-3.9-4.64-4.09-.13-.19-1.1-1.47-1.1-2.8 0-1.33.7-1.98.95-2.25.24-.27.53-.34.7-.34h.5c.16 0 .38-.06.59.45.22.53.74 1.83.8 1.96.07.13.11.29.02.47-.09.19-.13.3-.27.46-.13.16-.28.36-.4.48-.13.13-.27.28-.12.54.16.27.69 1.14 1.48 1.85 1.02.91 1.88 1.19 2.15 1.32.26.13.42.11.57-.07.16-.18.66-.77.84-1.03.18-.27.36-.22.6-.13.25.09 1.55.73 1.82.86.27.13.45.2.51.31.07.11.07.64-.17 1.32Z"></path>
+            </svg>
             {ui.cta.whatsapp}
           </a>
         </div>
@@ -122,15 +156,15 @@ const otherLocale = locale === 'es' ? 'en' : 'es';
 </header>
 
 <script>
-  const menu = document.querySelector<HTMLDetailsElement>('header details');
+  const settings = document.querySelector<HTMLDetailsElement>('[data-mobile-settings]');
 
-  if (menu) {
+  if (settings) {
     document.addEventListener('click', (event) => {
-      if (menu.open && !menu.contains(event.target as Node)) menu.open = false;
+      if (settings.open && !settings.contains(event.target as Node)) settings.open = false;
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') menu.open = false;
+      if (event.key === 'Escape') settings.open = false;
     });
   }
 </script>
