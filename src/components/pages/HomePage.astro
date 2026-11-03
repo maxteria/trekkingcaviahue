@@ -26,7 +26,6 @@ const featured = [...excursions.filter((entry) => entry.data.featured), ...excur
 );
 
 const heroPrimary = pick('trekking-volcan-copahue');
-const heroSecondary = pick('laguna-escondida-con-raquetas-de-nieve');
 
 const summer = pick('excursion-riscos-bayos');
 const winter = pick('cascadas-del-agrio-con-raquetas-de-nieve');
@@ -38,85 +37,64 @@ const waMessage =
     : 'Hi Josefina! I would like to plan a trek in Caviahue. Could you tell me which options are available?';
 ---
 
-<section class="container-page pt-8 sm:pt-12">
-  <div class="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14">
-    <div>
-      <p class="inline-flex items-center gap-2 rounded-full border border-cream-300 bg-surface/70 px-3.5 py-1.5 text-xs font-medium uppercase tracking-[0.16em] text-ink-500">
+{/* Hero — full-bleed background image with gradient overlay */}
+<section class="relative flex min-h-[88vh] items-end overflow-hidden lg:min-h-[92vh]">
+  <Image
+    src={heroPrimary.data.cover}
+    alt={heroPrimary.data.coverAlt}
+    widths={[640, 960, 1280, 1920]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    class="absolute inset-0 h-full w-full object-cover brightness-[0.85] contrast-[1.18] saturate-[1.25]"
+  />
+
+  <div class="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/40 to-ink-950/10"></div>
+
+  <div class="container-page relative z-10 w-full pb-12 pt-24 sm:pb-16 lg:pb-20">
+    <div class="max-w-2xl">
+      <p class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-medium uppercase tracking-[0.16em] text-white/90 backdrop-blur-sm">
         <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>
         {ui.home.eyebrow}
       </p>
 
-      <h1 class="mt-6 font-display text-[2.4rem] leading-[1.06] tracking-tight text-ink-900 sm:text-5xl lg:text-[3.5rem]">
+      <h1 class="mt-6 font-display text-[2.6rem] leading-[1.04] tracking-tight text-white sm:text-5xl lg:text-[3.75rem]">
         {ui.home.title}
       </h1>
 
-      <p class="mt-5 max-w-xl text-base leading-relaxed text-ink-500 sm:text-lg">{ui.home.subtitle}</p>
+      <p class="mt-5 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">{ui.home.subtitle}</p>
 
       <div class="mt-8 flex flex-wrap items-center gap-3">
         <a
           href={ROUTES.excursions[locale]}
-          class="inline-flex items-center gap-2 rounded-full bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-600 hover:shadow-lift"
+          class="inline-flex items-center gap-2 rounded-full bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-lift transition hover:bg-brand-600"
         >
           {ui.home.primary}
           <span aria-hidden="true">→</span>
         </a>
         <a
           href={ROUTES.about[locale]}
-          class="inline-flex items-center gap-2 rounded-full border border-ink-900/15 bg-surface px-6 py-3.5 text-sm font-semibold text-ink-900 transition hover:border-brand-400 hover:text-brand-700"
+          class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/50 hover:bg-white/20"
         >
           {ui.home.secondary}
         </a>
       </div>
-
-      <dl class="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-cream-300/80 pt-6 text-sm">
-        <div>
-          <dt class="text-ink-500">{locale === 'es' ? 'Salidas' : 'Trips'}</dt>
-          <dd class="mt-1 font-display text-2xl text-ink-900">{excursions.length}</dd>
-        </div>
-        <div>
-          <dt class="text-ink-500">{locale === 'es' ? 'Temporadas' : 'Seasons'}</dt>
-          <dd class="mt-1 font-display text-2xl text-ink-900">2</dd>
-        </div>
-        <div>
-          <dt class="text-ink-500">{locale === 'es' ? 'Años guiando' : 'Years guiding'}</dt>
-          <dd class="mt-1 font-display text-2xl text-ink-900">24</dd>
-        </div>
-      </dl>
     </div>
 
-    <div class="grid grid-cols-2 gap-3 sm:gap-4">
-      <div class="col-span-2 overflow-hidden rounded-[2rem] bg-cream-200">
-        <Image
-          src={heroPrimary.data.cover}
-          alt={heroPrimary.data.coverAlt}
-          widths={[640, 960, 1280]}
-          sizes="(min-width: 1024px) 48vw, 92vw"
-          loading="eager"
-          fetchpriority="high"
-          class="aspect-[16/10] w-full object-cover"
-        />
+    <dl class="mt-12 grid max-w-lg grid-cols-3 gap-4 border-t border-white/15 pt-6 text-sm">
+      <div>
+        <dt class="text-white/60">{locale === 'es' ? 'Salidas' : 'Trips'}</dt>
+        <dd class="mt-1 font-display text-2xl text-white">{excursions.length}</dd>
       </div>
-      <div class="overflow-hidden rounded-[1.5rem] bg-cream-200">
-        <Image
-          src={heroSecondary.data.cover}
-          alt={heroSecondary.data.coverAlt}
-          widths={[400, 640]}
-          sizes="(min-width: 1024px) 24vw, 45vw"
-          class="aspect-square w-full object-cover"
-        />
+      <div>
+        <dt class="text-white/60">{locale === 'es' ? 'Temporadas' : 'Seasons'}</dt>
+        <dd class="mt-1 font-display text-2xl text-white">2</dd>
       </div>
-      <div class="flex flex-col justify-between rounded-[1.5rem] bg-brand-500 p-5 text-white">
-        <p class="font-display text-xl leading-snug">{locale === 'es' ? 'Guía habilitada' : 'Licensed guide'}</p>
-        <p class="mt-3 text-sm text-white/80">
-          {locale === 'es'
-            ? 'Secretaría de Turismo de Neuquén, ANP y Municipalidad de Caviahue-Copahue.'
-            : 'Tourism Secretariat of Neuquén, ANP and the Municipality of Caviahue-Copahue.'}
-        </p>
-        <a href={ROUTES.about[locale]} class="mt-4 text-sm font-semibold underline-offset-4 hover:underline">
-          {ui.home.aboutCta} →
-        </a>
+      <div>
+        <dt class="text-white/60">{locale === 'es' ? 'Años guiando' : 'Years guiding'}</dt>
+        <dd class="mt-1 font-display text-2xl text-white">24</dd>
       </div>
-    </div>
+    </dl>
   </div>
 </section>
 
