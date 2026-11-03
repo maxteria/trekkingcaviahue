@@ -31,7 +31,7 @@ const otherLocale = locale === 'es' ? 'en' : 'es';
 <header class="sticky top-0 z-40 border-b border-cream-300/60 bg-cream-50/85 backdrop-blur-md">
   <div class="container-page flex h-16 items-center justify-between gap-4 sm:h-20">
     <a href={ROUTES.home[locale]} class="flex items-center gap-2.5" aria-label={SITE.name}>
-      <Image src={logo} alt="" width={40} height={37} class="h-9 w-auto sm:h-10" loading="eager" />
+      <Image src={logo} alt="" widths={[80, 120, 160]} sizes="40px" loading="eager" format="png" class="h-9 w-auto sm:h-10" />
       <span class="font-display text-lg leading-none tracking-tight text-ink-900 sm:text-xl">
         Trekking <span class="text-brand-600">Caviahue</span>
       </span>
