@@ -204,6 +204,30 @@ const otherLocale = locale === 'es' ? 'en' : 'es';
 </header>
 
 <script>
+  const root = document.documentElement;
+
+  const syncValueLabels = () => {
+    const isDark = root.classList.contains('dark');
+    document.querySelectorAll<HTMLElement>('[data-theme-value]').forEach((el) => {
+      el.textContent = isDark
+        ? (el.dataset.dark ?? 'dark')
+        : (el.dataset.light ?? 'light');
+    });
+  };
+
+  // Initialize on load so label matches stored/system preference
+  syncValueLabels();
+
+  // Theme toggle — works from both desktop and mobile menu buttons
+  document.querySelectorAll('[data-theme-toggle-row]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const isDark = root.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      syncValueLabels();
+    });
+  });
+
+  // Close dropdowns on outside click + Escape
   const dropdowns = document.querySelectorAll<HTMLDetailsElement>('[data-mobile-settings], [data-desktop-settings]');
 
   dropdowns.forEach((dropdown) => {
