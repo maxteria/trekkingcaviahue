@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CatalogPage from '../../../components/pages/CatalogPage.astro';
+import { ROUTES, SITE } from '../../../data/site';
+import { t } from '../../../data/ui';
+
+const locale = 'en' as const;
+const ui = t(locale);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: ui.meta.catalog.title,
+  description: ui.meta.catalog.description,
+  url: new URL(ROUTES.excursions.en, SITE.url).href,
+  inLanguage: 'en',
+};
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${ui.meta.catalog.title} · ${SITE.name}`}
+  description={ui.meta.catalog.description}
+  path={ROUTES.excursions.en}
+  alternatePath={ROUTES.excursions.es}
+  image="/og-default.jpg"
+  imageAlt="Excursions in Caviahue"
+  jsonLd={jsonLd}
+>
+  <CatalogPage locale={locale} />
+</BaseLayout>

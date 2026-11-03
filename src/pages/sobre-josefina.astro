@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AboutPage from '../components/pages/AboutPage.astro';
+import { ROUTES, SITE } from '../data/site';
+import { t } from '../data/ui';
+
+const locale = 'es' as const;
+const ui = t(locale);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: ui.meta.about.title,
+  description: ui.meta.about.description,
+  url: new URL(ROUTES.about.es, SITE.url).href,
+  mainEntity: {
+    '@type': 'Person',
+    name: SITE.guide,
+    jobTitle: 'Guía de montaña',
+    worksFor: { '@type': 'TravelAgency', name: SITE.name, url: SITE.url },
+    sameAs: [SITE.instagramUrl],
+  },
+};
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${ui.meta.about.title} · ${SITE.name}`}
+  description={ui.meta.about.description}
+  path={ROUTES.about.es}
+  alternatePath={ROUTES.about.en}
+  image="/og-default.jpg"
+  imageAlt="Josefina Cabral, guía de montaña"
+  jsonLd={jsonLd}
+>
+  <AboutPage locale={locale} />
+</BaseLayout>

@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HomePage from '../../components/pages/HomePage.astro';
+import { getExcursions, slugOf } from '../../data/excursions';
+import { ROUTES, SITE } from '../../data/site';
+import { t } from '../../data/ui';
+
+const locale = 'en' as const;
+const ui = t(locale);
+const excursions = await getExcursions(locale);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'TravelAgency',
+    name: SITE.name,
+    url: SITE.url,
+    email: SITE.email,
+    telephone: '+5492942545621',
+    image: new URL('/og-default.jpg', SITE.url).href,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: SITE.location.city,
+      addressRegion: SITE.location.region,
+      addressCountry: SITE.location.country,
+    },
+    sameAs: [SITE.instagramUrl, SITE.agencyUrl],
+    founder: { '@type': 'Person', name: SITE.guide },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE.name,
+    url: SITE.url,
+    inLanguage: 'en',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: ui.catalog.title,
+    itemListElement: excursions.map((entry, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'TouristTrip',
+        name: entry.data.title,
+        url: new URL(ROUTES.excursion(slugOf(entry)).en, SITE.url).href,
+        description: entry.data.summary,
+      },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  locale={locale}
+  title={ui.meta.home.title}
+  description={ui.meta.home.description}
+  path={ROUTES.home.en}
+  alternatePath={ROUTES.home.es}
+  image="/og-default.jpg"
+  imageAlt="Trekking Caviahue"
+  jsonLd={jsonLd}
+>
+  <HomePage locale={locale} />
+</BaseLayout>

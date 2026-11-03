@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets';
+import { t, type Locale } from '../data/ui';
+
+interface Props {
+  images: { src: ImageMetadata; alt: string }[];
+  locale: Locale;
+}
+
+const { images, locale } = Astro.props;
+const ui = t(locale);
+---
+
+<div data-gallery class="not-prose">
+  <div class="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-3">
+    {
+      images.map((image, index) => (
+        <button
+          type="button"
+          class="group relative aspect-square cursor-zoom-in overflow-hidden rounded-2xl bg-cream-200"
+          data-gallery-item
+          data-index={index}
+          data-full={image.src.src}
+          data-alt={image.alt}
+          aria-label={`${ui.cta.gallery}: ${image.alt}`}
+        >
+          <Image
+            src={image.src}
+            alt={image.alt}
+            widths={[320, 480, 720]}
+            sizes="(min-width: 768px) 30vw, 45vw"
+            loading={index < 3 ? 'eager' : 'lazy'}
+            class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.05]"
+          />
+          <span class="pointer-events-none absolute inset-0 bg-ink-950/0 transition-colors group-hover:bg-ink-950/10" />
+        </button>
+      ))
+    }
+  </div>
+
+  <dialog
+    data-gallery-dialog
+    class="fixed inset-0 m-auto max-h-none w-full max-w-4xl bg-transparent p-0 backdrop:bg-ink-950/90"
+    aria-label={ui.detail.galleryTitle}
+  >
+    <div class="flex h-full max-h-[92vh] flex-col gap-3 p-3 sm:p-4">
+      <div class="flex items-center justify-between text-white">
+        <p class="text-sm font-medium" data-gallery-counter></p>
+        <button
+          type="button"
+          class="cursor-pointer rounded-full border border-white/25 px-3 py-1.5 text-sm text-white/90 transition-colors hover:bg-white/10"
+          data-gallery-close
+        >
+          {locale === 'es' ? 'Cerrar' : 'Close'}
+        </button>
+      </div>
+
+      <div class="relative flex min-h-0 flex-1 items-center justify-center">
+        <button
+          type="button"
+          class="absolute left-0 z-10 flex h-11 w-11 -translate-x-1 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur transition-colors hover:bg-white/20"
+          data-gallery-prev
+          aria-label={locale === 'es' ? 'Anterior' : 'Previous'}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <img data-gallery-image alt="" class="max-h-[76vh] w-auto max-w-full rounded-xl object-contain" />
+        <button
+          type="button"
+          class="absolute right-0 z-10 flex h-11 w-11 translate-x-1 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur transition-colors hover:bg-white/20"
+          data-gallery-next
+          aria-label={locale === 'es' ? 'Siguiente' : 'Next'}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-gallery]');
+
+  if (root) {
+    const dialog = root.querySelector<HTMLDialogElement>('[data-gallery-dialog]');
+    const image = root.querySelector<HTMLImageElement>('[data-gallery-image]');
+    const counter = root.querySelector<HTMLElement>('[data-gallery-counter]');
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-gallery-item]'));
+    const prev = root.querySelector<HTMLButtonElement>('[data-gallery-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-gallery-next]');
+    const close = root.querySelector<HTMLButtonElement>('[data-gallery-close]');
+
+    if (dialog && image) {
+      let current = 0;
+
+      const show = (index: number) => {
+        if (!items.length) return;
+        current = (index + items.length) % items.length;
+        const item = items[current];
+        image.src = item.dataset.full ?? '';
+        image.alt = item.dataset.alt ?? '';
+        if (counter) counter.textContent = `${current + 1} / ${items.length}`;
+      };
+
+      for (const item of items) {
+        item.addEventListener('click', () => {
+          show(Number(item.dataset.index ?? 0));
+          dialog.showModal();
+        });
+      }
+
+      prev?.addEventListener('click', () => show(current - 1));
+      next?.addEventListener('click', () => show(current + 1));
+      close?.addEventListener('click', () => dialog.close());
+
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+
+      dialog.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') show(current - 1);
+        if (event.key === 'ArrowRight') show(current + 1);
+      });
+    }
+  }
+</script>

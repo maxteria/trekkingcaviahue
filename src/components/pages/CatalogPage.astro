@@ -1,0 +1,38 @@
+---
+import ExcursionCard from '../ExcursionCard.astro';
+import FilterBar from '../FilterBar.astro';
+import { getExcursions } from '../../data/excursions';
+import { t, type Locale } from '../../data/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const ui = t(locale);
+const excursions = await getExcursions(locale);
+---
+
+<section class="container-page pt-10 sm:pt-14">
+  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand-600">{ui.catalog.filters}</p>
+  <h1 class="mt-3 font-display text-4xl tracking-tight text-ink-900 sm:text-5xl">{ui.catalog.title}</h1>
+  <p class="mt-4 max-w-2xl text-ink-500">{ui.catalog.subtitle}</p>
+</section>
+
+<section class="container-page mt-8 pb-4">
+  <div
+    data-catalog
+    data-label-one={locale === 'es' ? 'excursión' : 'excursion'}
+    data-label-many={locale === 'es' ? 'excursiones' : 'excursions'}
+  >
+    <FilterBar locale={locale} />
+
+    <div class="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {excursions.map((entry, index) => <ExcursionCard excursion={entry} locale={locale} eager={index < 3} />)}
+    </div>
+
+    <p class="mt-10 rounded-2xl border border-dashed border-cream-400 bg-white/60 px-5 py-6 text-center text-sm text-ink-500" data-catalog-empty hidden>
+      {ui.catalog.empty}
+    </p>
+  </div>
+</section>

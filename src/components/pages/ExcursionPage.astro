@@ -1,0 +1,167 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Gallery from '../Gallery.astro';
+import SeasonChip from '../SeasonChip.astro';
+import WhatsAppCta from '../WhatsAppCta.astro';
+import type { Excursion } from '../../data/excursions';
+import { ROUTES } from '../../data/site';
+import { t, type Locale } from '../../data/ui';
+
+interface Props {
+  excursion: Excursion;
+  locale: Locale;
+}
+
+const { excursion, locale } = Astro.props;
+const ui = t(locale);
+const { data } = excursion;
+const { Content } = await render(excursion);
+
+const difficultyLabel =
+  data.difficulty === 'baja' ? ui.difficulty.baja : data.difficulty === 'media' ? ui.difficulty.media : ui.difficulty.alta;
+
+const specs = [
+  { label: ui.duration.label, value: ui.duration.hours(data.durationHours) },
+  { label: ui.difficulty.label, value: difficultyLabel },
+  ...(data.distanceKm ? [{ label: ui.detail.distance, value: ui.detail.distanceValue(data.distanceKm) }] : []),
+  ...(data.elevationGainM ? [{ label: ui.detail.elevation, value: ui.detail.elevationValue(data.elevationGainM) }] : []),
+  ...(data.maxAltitudeM ? [{ label: ui.detail.altitude, value: ui.detail.altitudeValue(data.maxAltitudeM) }] : []),
+];
+
+const waMessage = ui.detail.waMessage(data.title);
+---
+
+<article class="container-page pt-8 sm:pt-12">
+  <a
+    href={ROUTES.excursions[locale]}
+    class="inline-flex items-center gap-2 text-sm font-medium text-ink-500 transition-colors hover:text-brand-600"
+  >
+    <span aria-hidden="true">←</span> {ui.cta.back}
+  </a>
+
+  <header class="mt-6 grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+    <div>
+      <div class="flex flex-wrap gap-1.5">
+        {data.season.map((season) => <SeasonChip season={season} locale={locale} />)}
+      </div>
+      <h1 class="mt-4 max-w-3xl font-display text-[2.2rem] leading-[1.08] tracking-tight text-ink-900 sm:text-5xl">
+        {data.title}
+      </h1>
+      <p class="mt-4 max-w-2xl text-base leading-relaxed text-ink-500 sm:text-lg">{data.summary}</p>
+    </div>
+
+    <div class="rounded-card border border-cream-300/80 bg-white p-5 shadow-soft">
+      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-500">{ui.detail.priceNote}</p>
+      <p class="mt-2 font-display text-2xl text-ink-900">
+        {locale === 'es' ? 'Consultá disponibilidad' : 'Ask for availability'}
+      </p>
+      <p class="mt-1 text-sm text-ink-500">{ui.detail.ctaNote}</p>
+      <WhatsAppCta message={waMessage} label={ui.cta.whatsapp} class="mt-4 w-full" />
+    </div>
+  </header>
+
+  <div class="mt-8 overflow-hidden rounded-[2rem] bg-cream-200">
+    <Image
+      src={data.cover}
+      alt={data.coverAlt}
+      widths={[720, 1080, 1440]}
+      sizes="(min-width: 1280px) 1120px, 92vw"
+      loading="eager"
+      fetchpriority="high"
+      class="aspect-[16/9] w-full object-cover"
+    />
+  </div>
+
+  <div class="mt-10 grid gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:gap-14">
+    <div>
+      <div class="prose-trek">
+        <Content />
+      </div>
+
+      {
+        data.includes.length > 0 && (
+          <section class="mt-10 rounded-card border border-cream-300/80 bg-white p-6">
+            <h2 class="font-display text-2xl text-ink-900">{ui.detail.includes}</h2>
+            <ul class="mt-4 grid gap-2.5 text-sm text-ink-700 sm:grid-cols-2">
+              {data.includes.map((item) => (
+                <li class="flex items-start gap-2.5">
+                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" class="h-3 w-3" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        data.bring.length > 0 && (
+          <section class="mt-5 rounded-card border border-cream-300/80 bg-white p-6">
+            <h2 class="font-display text-2xl text-ink-900">{ui.detail.bring}</h2>
+            <ul class="mt-4 grid gap-2.5 text-sm text-ink-700 sm:grid-cols-2">
+              {data.bring.map((item) => (
+                <li class="flex items-start gap-2.5">
+                  <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500"></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+
+    <aside class="lg:sticky lg:top-28 lg:self-start">
+      <div class="rounded-card border border-cream-300/80 bg-cream-100 p-6">
+        <h2 class="font-display text-xl text-ink-900">{ui.detail.specs}</h2>
+        <dl class="mt-4 space-y-3 text-sm">
+          {
+            specs.map((spec) => (
+              <div class="flex items-baseline justify-between gap-4 border-b border-cream-300/70 pb-2.5 last:border-0 last:pb-0">
+                <dt class="text-ink-500">{spec.label}</dt>
+                <dd class="text-right font-semibold text-ink-900">{spec.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        {
+          data.meetingPoint && (
+            <div class="mt-5 rounded-2xl bg-white/70 p-4">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-ink-500">{ui.detail.meeting}</p>
+              <p class="mt-1.5 text-sm text-ink-700">{data.meetingPoint}</p>
+            </div>
+          )
+        }
+
+        <WhatsAppCta message={waMessage} label={ui.cta.consult} class="mt-5 w-full" />
+      </div>
+    </aside>
+  </div>
+
+  {
+    data.gallery.length > 0 && (
+      <section class="mt-14">
+        <h2 class="font-display text-2xl text-ink-900 sm:text-3xl">{ui.detail.galleryTitle}</h2>
+        <div class="mt-5">
+          <Gallery images={data.gallery} locale={locale} />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="mt-16 overflow-hidden rounded-[2rem] bg-brand-500 px-6 py-12 text-white sm:px-12">
+    <div class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+      <div>
+        <h2 class="font-display text-2xl sm:text-3xl">{data.title}</h2>
+        <p class="mt-2 max-w-xl text-sm text-white/85">{ui.detail.ctaNote}</p>
+      </div>
+      <WhatsAppCta message={waMessage} label={ui.cta.whatsapp} variant="light" />
+    </div>
+  </section>
+</article>

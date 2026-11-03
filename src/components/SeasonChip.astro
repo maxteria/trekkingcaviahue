@@ -1,0 +1,30 @@
+---
+import { t, type Locale } from '../data/ui';
+
+interface Props {
+  season: 'verano' | 'invierno';
+  locale: Locale;
+  tone?: 'solid' | 'soft';
+}
+
+const { season, locale, tone = 'soft' } = Astro.props;
+const ui = t(locale);
+
+const label = season === 'verano' ? ui.season.verano : ui.season.invierno;
+const classes =
+  season === 'verano'
+    ? 'bg-gold-100/95 text-gold-700 ring-gold-300/60'
+    : 'bg-brand-50/95 text-brand-700 ring-brand-200/70';
+
+const solid = season === 'verano' ? 'bg-gold-500 text-ink-900' : 'bg-brand-500 text-white';
+---
+
+<span
+  class:list={[
+    'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-wider ring-1 backdrop-blur-sm',
+    tone === 'solid' ? solid : classes,
+  ]}
+>
+  {season === 'verano' ? '☀' : '❄'}
+  {label}
+</span>

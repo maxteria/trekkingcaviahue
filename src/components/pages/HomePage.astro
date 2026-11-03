@@ -1,0 +1,234 @@
+---
+import { Image } from 'astro:assets';
+import ExcursionCard from '../ExcursionCard.astro';
+import SeasonChip from '../SeasonChip.astro';
+import WhatsAppCta from '../WhatsAppCta.astro';
+import { ABOUT } from '../../data/about';
+import { getExcursions, slugOf, type Excursion } from '../../data/excursions';
+import { ROUTES, SITE, whatsappLink } from '../../data/site';
+import { t, type Locale } from '../../data/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const ui = t(locale);
+const about = ABOUT[locale];
+
+const excursions = await getExcursions(locale);
+const bySlug = new Map(excursions.map((entry) => [slugOf(entry), entry]));
+const pick = (slug: string): Excursion => bySlug.get(slug) as Excursion;
+
+const featured = [...excursions.filter((entry) => entry.data.featured), ...excursions.filter((entry) => !entry.data.featured)].slice(
+  0,
+  6,
+);
+
+const heroPrimary = pick('trekking-volcan-copahue');
+const heroSecondary = pick('laguna-escondida-con-raquetas-de-nieve');
+
+const summer = pick('excursion-riscos-bayos');
+const winter = pick('cascadas-del-agrio-con-raquetas-de-nieve');
+const portrait = about.gallery[0];
+
+const waMessage =
+  locale === 'es'
+    ? 'Hola Josefina! Quiero armar una salida de trekking en Caviahue. ¿Me contás qué opciones hay?'
+    : 'Hi Josefina! I would like to plan a trek in Caviahue. Could you tell me which options are available?';
+---
+
+<section class="container-page pt-8 sm:pt-12">
+  <div class="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14">
+    <div>
+      <p class="inline-flex items-center gap-2 rounded-full border border-cream-300 bg-white/70 px-3.5 py-1.5 text-xs font-medium uppercase tracking-[0.16em] text-ink-500">
+        <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>
+        {ui.home.eyebrow}
+      </p>
+
+      <h1 class="mt-6 font-display text-[2.4rem] leading-[1.06] tracking-tight text-ink-900 sm:text-5xl lg:text-[3.5rem]">
+        {ui.home.title}
+      </h1>
+
+      <p class="mt-5 max-w-xl text-base leading-relaxed text-ink-500 sm:text-lg">{ui.home.subtitle}</p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a
+          href={ROUTES.excursions[locale]}
+          class="inline-flex items-center gap-2 rounded-full bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-600 hover:shadow-lift"
+        >
+          {ui.home.primary}
+          <span aria-hidden="true">→</span>
+        </a>
+        <a
+          href={ROUTES.about[locale]}
+          class="inline-flex items-center gap-2 rounded-full border border-ink-900/15 bg-white px-6 py-3.5 text-sm font-semibold text-ink-900 transition hover:border-brand-400 hover:text-brand-700"
+        >
+          {ui.home.secondary}
+        </a>
+      </div>
+
+      <dl class="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-cream-300/80 pt-6 text-sm">
+        <div>
+          <dt class="text-ink-500">{locale === 'es' ? 'Salidas' : 'Trips'}</dt>
+          <dd class="mt-1 font-display text-2xl text-ink-900">{excursions.length}</dd>
+        </div>
+        <div>
+          <dt class="text-ink-500">{locale === 'es' ? 'Temporadas' : 'Seasons'}</dt>
+          <dd class="mt-1 font-display text-2xl text-ink-900">2</dd>
+        </div>
+        <div>
+          <dt class="text-ink-500">{locale === 'es' ? 'Años guiando' : 'Years guiding'}</dt>
+          <dd class="mt-1 font-display text-2xl text-ink-900">24</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 sm:gap-4">
+      <div class="col-span-2 overflow-hidden rounded-[2rem] bg-cream-200">
+        <Image
+          src={heroPrimary.data.cover}
+          alt={heroPrimary.data.coverAlt}
+          widths={[640, 960, 1280]}
+          sizes="(min-width: 1024px) 48vw, 92vw"
+          loading="eager"
+          fetchpriority="high"
+          class="aspect-[16/10] w-full object-cover"
+        />
+      </div>
+      <div class="overflow-hidden rounded-[1.5rem] bg-cream-200">
+        <Image
+          src={heroSecondary.data.cover}
+          alt={heroSecondary.data.coverAlt}
+          widths={[400, 640]}
+          sizes="(min-width: 1024px) 24vw, 45vw"
+          class="aspect-square w-full object-cover"
+        />
+      </div>
+      <div class="flex flex-col justify-between rounded-[1.5rem] bg-brand-500 p-5 text-white">
+        <p class="font-display text-xl leading-snug">{locale === 'es' ? 'Guía habilitada' : 'Licensed guide'}</p>
+        <p class="mt-3 text-sm text-white/80">
+          {locale === 'es'
+            ? 'Secretaría de Turismo de Neuquén, ANP y Municipalidad de Caviahue-Copahue.'
+            : 'Tourism Secretariat of Neuquén, ANP and the Municipality of Caviahue-Copahue.'}
+        </p>
+        <a href={ROUTES.about[locale]} class="mt-4 text-sm font-semibold underline-offset-4 hover:underline">
+          {ui.home.aboutCta} →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container-page py-16 sm:py-24">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <h2 class="font-display text-3xl tracking-tight text-ink-900 sm:text-4xl">{ui.home.featuredTitle}</h2>
+      <p class="mt-2 max-w-xl text-ink-500">{ui.home.featuredSubtitle}</p>
+    </div>
+    <a
+      href={ROUTES.excursions[locale]}
+      class="inline-flex items-center gap-2 rounded-full border border-ink-900/15 bg-white px-5 py-2.5 text-sm font-semibold text-ink-900 transition hover:border-brand-400 hover:text-brand-700"
+    >
+      {ui.cta.seeAll} <span aria-hidden="true">→</span>
+    </a>
+  </div>
+
+  <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    {featured.map((entry, index) => <ExcursionCard excursion={entry} locale={locale} eager={index < 3} />)}
+  </div>
+</section>
+
+<section class="bg-cream-100 py-16 sm:py-24">
+  <div class="container-page">
+    <h2 class="max-w-2xl font-display text-3xl tracking-tight text-ink-900 sm:text-4xl">{ui.home.seasonsTitle}</h2>
+
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      <a
+        href={`${ROUTES.excursions[locale]}?temporada=verano`}
+        class="group relative overflow-hidden rounded-card bg-ink-900 shadow-soft transition hover:shadow-lift"
+      >
+        <Image
+          src={summer.data.cover}
+          alt={summer.data.coverAlt}
+          widths={[640, 960]}
+          sizes="(min-width: 768px) 46vw, 92vw"
+          class="aspect-[16/11] w-full object-cover opacity-90 transition duration-700 group-hover:scale-[1.03]"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-ink-950/85 via-ink-950/20 to-transparent"></div>
+        <div class="absolute inset-x-0 bottom-0 p-6 text-white">
+          <SeasonChip season="verano" locale={locale} tone="solid" />
+          <h3 class="mt-3 font-display text-2xl">{ui.home.veranoTitle}</h3>
+          <p class="mt-2 max-w-md text-sm text-white/85">{ui.home.veranoText}</p>
+        </div>
+      </a>
+
+      <a
+        href={`${ROUTES.excursions[locale]}?temporada=invierno`}
+        class="group relative overflow-hidden rounded-card bg-ink-900 shadow-soft transition hover:shadow-lift"
+      >
+        <Image
+          src={winter.data.cover}
+          alt={winter.data.coverAlt}
+          widths={[640, 960]}
+          sizes="(min-width: 768px) 46vw, 92vw"
+          class="aspect-[16/11] w-full object-cover opacity-90 transition duration-700 group-hover:scale-[1.03]"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-ink-950/85 via-ink-950/20 to-transparent"></div>
+        <div class="absolute inset-x-0 bottom-0 p-6 text-white">
+          <SeasonChip season="invierno" locale={locale} tone="solid" />
+          <h3 class="mt-3 font-display text-2xl">{ui.home.inviernoTitle}</h3>
+          <p class="mt-2 max-w-md text-sm text-white/85">{ui.home.inviernoText}</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="container-page py-16 sm:py-24">
+  <div class="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+    <div class="overflow-hidden rounded-[2rem] bg-cream-200">
+      <Image src={portrait.src} alt={portrait.alt} widths={[480, 720]} sizes="(min-width: 1024px) 36vw, 92vw" class="aspect-[4/4.4] w-full object-cover" />
+    </div>
+
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand-600">{ui.home.aboutTitle}</p>
+      <h2 class="mt-3 font-display text-3xl tracking-tight text-ink-900 sm:text-4xl">{ui.about.title}</h2>
+      <p class="mt-4 text-ink-500">{ui.home.aboutText}</p>
+      <p class="mt-4 text-ink-500">{about.intro[0]}</p>
+      <a
+        href={ROUTES.about[locale]}
+        class="mt-6 inline-flex items-center gap-2 rounded-full bg-ink-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-ink-800"
+      >
+        {ui.home.aboutCta} <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="container-page pb-8">
+  <div class="overflow-hidden rounded-[2rem] bg-brand-500 px-6 py-12 text-white sm:px-12 sm:py-16">
+    <div class="grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
+      <div>
+        <h2 class="font-display text-3xl tracking-tight sm:text-4xl">{ui.home.contactTitle}</h2>
+        <p class="mt-3 max-w-xl text-white/85">{ui.home.contactText}</p>
+      </div>
+      <div class="flex flex-col items-start gap-3 lg:items-end">
+        <WhatsAppCta
+          message={waMessage}
+          label={ui.cta.whatsapp}
+          variant="light"
+        />
+        <a href={`mailto:${SITE.email}`} class="text-sm text-white/80 underline-offset-4 hover:underline">{SITE.email}</a>
+        <a
+          href={whatsappLink(waMessage)}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm text-white/70 underline-offset-4 hover:underline"
+        >
+          {SITE.whatsappDisplay}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

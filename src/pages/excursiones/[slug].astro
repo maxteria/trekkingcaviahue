@@ -1,0 +1,70 @@
+---
+import { getImage } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ExcursionPage from '../../components/pages/ExcursionPage.astro';
+import { getExcursions, slugOf, type Excursion } from '../../data/excursions';
+import { ROUTES, SITE } from '../../data/site';
+
+const locale = 'es' as const;
+
+export async function getStaticPaths() {
+  const excursions = await getExcursions('es');
+  return excursions.map((excursion) => ({
+    params: { slug: slugOf(excursion) },
+    props: { excursion },
+  }));
+}
+
+interface Props {
+  excursion: Excursion;
+}
+
+const { excursion } = Astro.props;
+const slug = slugOf(excursion);
+
+const og = await getImage({
+  src: excursion.data.cover,
+  width: 1200,
+  height: 630,
+  fit: 'cover',
+  format: 'jpeg',
+});
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TouristTrip',
+  name: excursion.data.title,
+  description: excursion.data.summary,
+  url: new URL(ROUTES.excursion(slug).es, SITE.url).href,
+  image: new URL(og.src, SITE.url).href,
+  touristType: excursion.data.season.includes('invierno')
+    ? ['Winter travellers', 'Snowshoeing']
+    : ['Trekkers', 'Mountain travellers'],
+  provider: {
+    '@type': 'TravelAgency',
+    name: SITE.name,
+    url: SITE.url,
+    telephone: '+5492942545621',
+    email: SITE.email,
+  },
+  subjectOf: {
+    '@type': 'Article',
+    about: excursion.data.title,
+    inLanguage: 'es-AR',
+  },
+};
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${excursion.data.seo.title} · ${SITE.name}`}
+  description={excursion.data.seo.description}
+  path={ROUTES.excursion(slug).es}
+  alternatePath={ROUTES.excursion(slug).en}
+  image={og.src}
+  imageAlt={excursion.data.coverAlt}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <ExcursionPage excursion={excursion} locale={locale} />
+</BaseLayout>

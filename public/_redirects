@@ -1,0 +1,21 @@
+# Old WordPress URLs → new static site
+/inicio/            /                   301
+/inicio             /                   301
+/caviahue/          /                   301
+/caviahue           /                   301
+/josefina-cabral/   /sobre-josefina/    301
+/josefina-cabral    /sobre-josefina/    301
+/contacto/          /                   301
+/contacto           /                   301
+/medios-de-pago/    /                   301
+/medios-de-pago     /                   301
+
+# WordPress internals
+/wp-login.php       /                   301
+/wp-admin/*         /                   301
+/feed/              /                   301
+/feed               /                   301
+/sitemap_index.xml  /sitemap-index.xml  301
+
+# English aliases
+/en/                /en/                200

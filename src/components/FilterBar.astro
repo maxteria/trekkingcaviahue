@@ -1,0 +1,178 @@
+---
+import { t, type Locale } from '../data/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const ui = t(locale);
+
+const groups = [
+  {
+    key: 'season',
+    label: ui.season.label,
+    options: [
+      { value: 'verano', label: ui.season.verano },
+      { value: 'invierno', label: ui.season.invierno },
+    ],
+  },
+  {
+    key: 'difficulty',
+    label: ui.difficulty.label,
+    options: [
+      { value: 'baja', label: ui.difficulty.baja },
+      { value: 'media', label: ui.difficulty.media },
+      { value: 'alta', label: ui.difficulty.alta },
+    ],
+  },
+  {
+    key: 'duration',
+    label: ui.duration.label,
+    options: [
+      { value: 'short', label: ui.duration.short },
+      { value: 'medium', label: ui.duration.medium },
+      { value: 'long', label: ui.duration.long },
+    ],
+  },
+];
+---
+
+<div class="rounded-card border border-cream-300/80 bg-white/80 p-4 shadow-soft sm:p-5">
+  <div class="flex flex-col gap-4">
+    {
+      groups.map((group) => (
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <span class="w-24 shrink-0 text-xs font-semibold uppercase tracking-[0.14em] text-ink-500">
+            {group.label}
+          </span>
+          <div class="flex flex-wrap gap-2" data-filter-group={group.key}>
+            {group.options.map((option) => (
+              <button
+                type="button"
+                class="cursor-pointer rounded-full border border-cream-300 bg-cream-50 px-3.5 py-1.5 text-sm font-medium text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700 aria-pressed:border-brand-500 aria-pressed:bg-brand-500 aria-pressed:text-white"
+                data-value={option.value}
+                aria-pressed="false"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+
+    <div class="flex flex-wrap items-center justify-between gap-3 border-t border-cream-300/70 pt-4">
+      <p class="text-sm text-ink-500" aria-live="polite" data-catalog-results>
+        <span data-catalog-count>0</span>
+        <span data-catalog-count-label></span>
+      </p>
+      <button
+        type="button"
+        class="hidden cursor-pointer text-sm font-semibold text-brand-600 underline-offset-4 hover:underline"
+        data-catalog-reset
+        hidden
+      >
+        {ui.catalog.reset}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-catalog]');
+
+  if (root) {
+    const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-card]'));
+    const groups = Array.from(root.querySelectorAll<HTMLElement>('[data-filter-group]'));
+    const countEl = root.querySelector<HTMLElement>('[data-catalog-count]');
+    const labelEl = root.querySelector<HTMLElement>('[data-catalog-count-label]');
+    const resetEl = root.querySelector<HTMLButtonElement>('[data-catalog-reset]');
+    const emptyEl = root.querySelector<HTMLElement>('[data-catalog-empty]');
+
+    const one = root.dataset.labelOne ?? '';
+    const many = root.dataset.labelMany ?? '';
+
+    const active = new Map<string, Set<string>>();
+    for (const group of groups) active.set(group.dataset.filterGroup ?? '', new Set());
+
+    const presets: Record<string, string> = { temporada: 'season', dificultad: 'difficulty', duracion: 'duration' };
+    const params = new URLSearchParams(window.location.search);
+    for (const [param, key] of Object.entries(presets)) {
+      const values = (params.get(param) ?? '').split(',').filter(Boolean);
+      const set = active.get(key);
+      if (set) for (const value of values) set.add(value);
+    }
+
+    for (const group of groups) {
+      const set = active.get(group.dataset.filterGroup ?? '');
+      for (const button of Array.from(group.querySelectorAll<HTMLButtonElement>('button'))) {
+        button.setAttribute('aria-pressed', String(set?.has(button.dataset.value ?? '') ?? false));
+      }
+    }
+
+    const syncUrl = () => {
+      const url = new URL(window.location.href);
+      for (const [param, key] of Object.entries(presets)) {
+        const values = Array.from(active.get(key) ?? []);
+        if (values.length) url.searchParams.set(param, values.join(','));
+        else url.searchParams.delete(param);
+      }
+      window.history.replaceState(null, '', url);
+    };
+
+    const matches = (card: HTMLElement) => {
+      for (const [key, values] of active) {
+        if (values.size === 0) continue;
+        const tokens = (card.dataset[key] ?? '').split(/\s+/).filter(Boolean);
+        if (!tokens.some((token) => values.has(token))) return false;
+      }
+      return true;
+    };
+
+    const apply = () => {
+      let visible = 0;
+      for (const card of cards) {
+        const show = matches(card);
+        card.hidden = !show;
+        if (show) visible += 1;
+      }
+
+      if (countEl) countEl.textContent = String(visible);
+      if (labelEl) labelEl.textContent = visible === 1 ? one : many;
+      if (emptyEl) emptyEl.hidden = visible !== 0;
+
+      const anyActive = Array.from(active.values()).some((values) => values.size > 0);
+      if (resetEl) resetEl.hidden = !anyActive;
+      syncUrl();
+    };
+
+    for (const group of groups) {
+      const key = group.dataset.filterGroup ?? '';
+      for (const button of Array.from(group.querySelectorAll<HTMLButtonElement>('button'))) {
+        button.addEventListener('click', () => {
+          const value = button.dataset.value ?? '';
+          const set = active.get(key) ?? new Set<string>();
+          if (set.has(value)) set.delete(value);
+          else set.add(value);
+          active.set(key, set);
+          button.setAttribute('aria-pressed', String(set.has(value)));
+          apply();
+        });
+      }
+    }
+
+    resetEl?.addEventListener('click', () => {
+      for (const [key, set] of active) {
+        set.clear();
+        const group = groups.find((element) => element.dataset.filterGroup === key);
+        for (const button of Array.from(group?.querySelectorAll<HTMLButtonElement>('button') ?? [])) {
+          button.setAttribute('aria-pressed', 'false');
+        }
+      }
+      apply();
+    });
+
+    apply();
+  }
+</script>

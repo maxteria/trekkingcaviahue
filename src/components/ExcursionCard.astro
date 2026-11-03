@@ -1,0 +1,64 @@
+---
+import { Image } from 'astro:assets';
+import SeasonChip from './SeasonChip.astro';
+import { durationBucket, type Excursion } from '../data/excursions';
+import { ROUTES } from '../data/site';
+import { t, type Locale } from '../data/ui';
+
+interface Props {
+  excursion: Excursion;
+  locale: Locale;
+  eager?: boolean;
+  compact?: boolean;
+}
+
+const { excursion, locale, eager = false, compact = false } = Astro.props;
+const ui = t(locale);
+const { data } = excursion;
+const slug = excursion.id.split('/').pop() as string;
+const href = ROUTES.excursion(slug)[locale];
+const bucket = durationBucket(data.durationHours);
+const difficultyLabel =
+  data.difficulty === 'baja' ? ui.difficulty.baja : data.difficulty === 'media' ? ui.difficulty.media : ui.difficulty.alta;
+---
+
+<a
+  href={href}
+  class="group flex h-full flex-col overflow-hidden rounded-card border border-cream-300/70 bg-white shadow-soft transition duration-300 hover:-translate-y-0.5 hover:shadow-lift"
+  data-card
+  data-season={data.season.join(' ')}
+  data-difficulty={data.difficulty}
+  data-duration={bucket}
+>
+  <div class:list={['relative overflow-hidden bg-cream-200', compact ? 'aspect-[16/10]' : 'aspect-[4/3]']}>
+    <Image
+      src={data.cover}
+      alt={data.coverAlt}
+      widths={[400, 640, 900]}
+      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw"
+      loading={eager ? 'eager' : 'lazy'}
+      class="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
+    />
+    <div class="absolute left-3 top-3 flex flex-wrap gap-1.5">
+      {data.season.map((season) => <SeasonChip season={season} locale={locale} />)}
+    </div>
+  </div>
+
+  <div class="flex flex-1 flex-col gap-2.5 p-5">
+    <h3 class="font-display text-xl leading-snug text-ink-900 group-hover:text-brand-700">{data.title}</h3>
+    <p class="line-clamp-3 text-sm leading-relaxed text-ink-500">{data.summary}</p>
+
+    <div class="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-2 text-xs font-medium text-ink-500">
+      <span class="inline-flex items-center gap-1.5">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" class="h-3.5 w-3.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path stroke-linecap="round" d="M12 7.5V12l3 1.8"></path>
+        </svg>
+        {ui.duration.hours(data.durationHours)}
+      </span>
+      <span aria-hidden="true" class="text-cream-400">·</span>
+      <span>{ui.difficulty.label}: {difficultyLabel}</span>
+      <span class="ml-auto font-semibold text-brand-600">{ui.cta.seeExcursion} →</span>
+    </div>
+  </div>
+</a>

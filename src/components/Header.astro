@@ -1,0 +1,134 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo.png';
+import { ROUTES, SITE, whatsappLink } from '../data/site';
+import { t, type Locale } from '../data/ui';
+
+interface Props {
+  locale: Locale;
+  path: string;
+  alternatePath: string;
+}
+
+const { locale, path, alternatePath } = Astro.props;
+const ui = t(locale);
+
+const links = [
+  { href: ROUTES.home[locale], label: ui.nav.home, match: 'home' as const },
+  { href: ROUTES.excursions[locale], label: ui.nav.excursions, match: 'excursions' as const },
+  { href: ROUTES.about[locale], label: ui.nav.about, match: 'about' as const },
+];
+
+const isActive = (href: string) =>
+  href === '/' || href === '/en/' ? path === href : path.startsWith(href.replace(/\/$/, ''));
+
+const waHref = whatsappLink(
+  locale === 'es' ? 'Hola Josefina! Quiero consultar por una excursión.' : 'Hi Josefina! I would like to ask about an excursion.',
+);
+const otherLocale = locale === 'es' ? 'en' : 'es';
+---
+
+<header class="sticky top-0 z-40 border-b border-cream-300/60 bg-cream-50/85 backdrop-blur-md">
+  <div class="container-page flex h-16 items-center justify-between gap-4 sm:h-20">
+    <a href={ROUTES.home[locale]} class="flex items-center gap-2.5" aria-label={SITE.name}>
+      <Image src={logo} alt="" width={40} height={37} class="h-9 w-auto sm:h-10" loading="eager" />
+      <span class="font-display text-lg leading-none tracking-tight text-ink-900 sm:text-xl">
+        Trekking <span class="text-brand-600">Caviahue</span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-1 md:flex" aria-label="Principal">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+            class:list={[
+              'rounded-full px-4 py-2 text-sm font-medium transition-colors',
+              isActive(link.href)
+                ? 'bg-brand-50 text-brand-700'
+                : 'text-ink-700 hover:bg-cream-200 hover:text-ink-900',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={alternatePath}
+        hreflang={otherLocale}
+        lang={otherLocale}
+        class="rounded-full border border-cream-300 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700"
+        aria-label={locale === 'es' ? 'Switch to English' : 'Cambiar a español'}
+      >
+        {locale === 'es' ? 'EN' : 'ES'}
+      </a>
+
+      <a
+        href={waHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden items-center gap-2 rounded-full bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-brand-600 sm:inline-flex"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="h-4 w-4">
+          <path
+            d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.42 1.27 4.86L2 22l5.3-1.32a9.9 9.9 0 0 0 4.74 1.2h.01c5.5 0 9.96-4.46 9.96-9.96S17.54 2 12.04 2Zm5.8 14.15c-.24.68-1.4 1.3-1.94 1.35-.5.05-.97.24-3.26-.68-2.76-1.09-4.5-3.9-4.64-4.09-.13-.19-1.1-1.47-1.1-2.8 0-1.33.7-1.98.95-2.25.24-.27.53-.34.7-.34h.5c.16 0 .38-.06.59.45.22.53.74 1.83.8 1.96.07.13.11.29.02.47-.09.19-.13.3-.27.46-.13.16-.28.36-.4.48-.13.13-.27.28-.12.54.16.27.69 1.14 1.48 1.85 1.02.91 1.88 1.19 2.15 1.32.26.13.42.11.57-.07.16-.18.66-.77.84-1.03.18-.27.36-.22.6-.13.25.09 1.55.73 1.82.86.27.13.45.2.51.31.07.11.07.64-.17 1.32Z"
+          ></path>
+        </svg>
+        WhatsApp
+      </a>
+
+      <details class="relative md:hidden">
+        <summary
+          class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-cream-300 text-ink-800 transition-colors hover:border-brand-300"
+          aria-label={locale === 'es' ? 'Abrir menú' : 'Open menu'}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true">
+            <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+        </summary>
+        <div class="absolute right-0 top-12 w-56 rounded-2xl border border-cream-300 bg-cream-50 p-2 shadow-lift">
+          {
+            links.map((link) => (
+              <a
+                href={link.href}
+                aria-current={isActive(link.href) ? 'page' : undefined}
+                class:list={[
+                  'block rounded-xl px-4 py-2.5 text-sm font-medium',
+                  isActive(link.href) ? 'bg-brand-50 text-brand-700' : 'text-ink-700 hover:bg-cream-200',
+                ]}
+              >
+                {link.label}
+              </a>
+            ))
+          }
+          <a
+            href={waHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-1 block rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white"
+          >
+            {ui.cta.whatsapp}
+          </a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  const menu = document.querySelector<HTMLDetailsElement>('header details');
+
+  if (menu) {
+    document.addEventListener('click', (event) => {
+      if (menu.open && !menu.contains(event.target as Node)) menu.open = false;
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') menu.open = false;
+    });
+  }
+</script>

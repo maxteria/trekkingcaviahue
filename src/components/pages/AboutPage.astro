@@ -1,0 +1,105 @@
+---
+import { Image } from 'astro:assets';
+import WhatsAppCta from '../WhatsAppCta.astro';
+import { ABOUT } from '../../data/about';
+import { ROUTES } from '../../data/site';
+import { t, type Locale } from '../../data/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const ui = t(locale);
+const about = ABOUT[locale];
+
+const waMessage =
+  locale === 'es'
+    ? 'Hola Josefina! Quiero consultarte por una excursión guiada en Caviahue.'
+    : 'Hi Josefina! I would like to ask about a guided excursion in Caviahue.';
+---
+
+<section class="container-page pt-10 sm:pt-14">
+  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand-600">{ui.about.eyebrow}</p>
+  <h1 class="mt-3 font-display text-4xl tracking-tight text-ink-900 sm:text-5xl">{ui.about.title}</h1>
+  <p class="mt-4 max-w-2xl text-ink-500">{ui.about.subtitle}</p>
+</section>
+
+<section class="container-page mt-10">
+  <div class="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
+    <div class="overflow-hidden rounded-[2rem] bg-cream-200">
+      <Image
+        src={about.gallery[0].src}
+        alt={about.gallery[0].alt}
+        widths={[480, 720]}
+        sizes="(min-width: 1024px) 40vw, 92vw"
+        loading="eager"
+        class="aspect-[4/4.6] w-full object-cover"
+      />
+    </div>
+
+    <div class="flex flex-col justify-center">
+      {
+        about.intro.map((paragraph, index) => (
+          <p class:list={['text-ink-700', index === 0 ? 'font-display text-2xl leading-snug text-ink-900' : 'mt-4 leading-relaxed']}>
+            {paragraph}
+          </p>
+        ))
+      }
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          href={ROUTES.excursions[locale]}
+          class="inline-flex items-center gap-2 rounded-full bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-600"
+        >
+          {ui.about.cta} <span aria-hidden="true">→</span>
+        </a>
+        <WhatsAppCta message={waMessage} label={ui.cta.whatsapp} variant="outline" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container-page mt-16 sm:mt-24">
+  <div class="grid gap-x-14 gap-y-10 md:grid-cols-2">
+    {
+      about.sections.map((section, index) => (
+        <div class="border-t border-cream-300 pt-5">
+          <span class="text-xs font-semibold uppercase tracking-[0.16em] text-sand-400">{String(index + 1).padStart(2, '0')}</span>
+          <h2 class="mt-2 font-display text-2xl text-ink-900">{section.title}</h2>
+          <p class="mt-2 leading-relaxed text-ink-500">{section.body}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<section class="container-page mt-16 sm:mt-24">
+  <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+    {
+      about.gallery.map((image) => (
+        <div class="overflow-hidden rounded-2xl bg-cream-200">
+          <Image
+            src={image.src}
+            alt={image.alt}
+            widths={[320, 480, 720]}
+            sizes="(min-width: 640px) 30vw, 45vw"
+            class="aspect-square w-full object-cover"
+          />
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<section class="container-page mt-16">
+  <div class="overflow-hidden rounded-[2rem] bg-ink-900 px-6 py-12 text-white sm:px-12">
+    <div class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+      <div>
+        <h2 class="font-display text-2xl sm:text-3xl">{ui.home.contactTitle}</h2>
+        <p class="mt-2 max-w-xl text-sm text-white/75">{ui.home.contactText}</p>
+      </div>
+      <WhatsAppCta message={waMessage} label={ui.cta.whatsapp} variant="light" />
+    </div>
+  </div>
+</section>

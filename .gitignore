@@ -1,0 +1,11 @@
+dist/
+.astro/
+node_modules/
+_backup/
+*.zip
+.DS_Store
+.env
+.env.*
+!.env.example
+.vercel/
+.wrangler/
