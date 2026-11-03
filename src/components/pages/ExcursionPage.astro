@@ -51,7 +51,7 @@ const waMessage = ui.detail.waMessage(data.title);
       <p class="mt-4 max-w-2xl text-base leading-relaxed text-ink-500 sm:text-lg">{data.summary}</p>
     </div>
 
-    <div class="rounded-card border border-cream-300/80 bg-white p-5 shadow-soft">
+    <div class="rounded-card border border-cream-300/80 bg-surface p-5 shadow-soft">
       <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-500">{ui.detail.priceNote}</p>
       <p class="mt-2 font-display text-2xl text-ink-900">
         {locale === 'es' ? 'Consultá disponibilidad' : 'Ask for availability'}
@@ -81,7 +81,7 @@ const waMessage = ui.detail.waMessage(data.title);
 
       {
         data.includes.length > 0 && (
-          <section class="mt-10 rounded-card border border-cream-300/80 bg-white p-6">
+          <section class="mt-10 rounded-card border border-cream-300/80 bg-surface p-6">
             <h2 class="font-display text-2xl text-ink-900">{ui.detail.includes}</h2>
             <ul class="mt-4 grid gap-2.5 text-sm text-ink-700 sm:grid-cols-2">
               {data.includes.map((item) => (
@@ -101,7 +101,7 @@ const waMessage = ui.detail.waMessage(data.title);
 
       {
         data.bring.length > 0 && (
-          <section class="mt-5 rounded-card border border-cream-300/80 bg-white p-6">
+          <section class="mt-5 rounded-card border border-cream-300/80 bg-surface p-6">
             <h2 class="font-display text-2xl text-ink-900">{ui.detail.bring}</h2>
             <ul class="mt-4 grid gap-2.5 text-sm text-ink-700 sm:grid-cols-2">
               {data.bring.map((item) => (
@@ -132,7 +132,7 @@ const waMessage = ui.detail.waMessage(data.title);
 
         {
           data.meetingPoint && (
-            <div class="mt-5 rounded-2xl bg-white/70 p-4">
+            <div class="mt-5 rounded-2xl bg-surface-soft/80 p-4">
               <p class="text-xs font-semibold uppercase tracking-[0.14em] text-ink-500">{ui.detail.meeting}</p>
               <p class="mt-1.5 text-sm text-ink-700">{data.meetingPoint}</p>
             </div>

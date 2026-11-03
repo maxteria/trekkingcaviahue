@@ -41,7 +41,7 @@ const waMessage =
 <section class="container-page pt-8 sm:pt-12">
   <div class="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14">
     <div>
-      <p class="inline-flex items-center gap-2 rounded-full border border-cream-300 bg-white/70 px-3.5 py-1.5 text-xs font-medium uppercase tracking-[0.16em] text-ink-500">
+      <p class="inline-flex items-center gap-2 rounded-full border border-cream-300 bg-surface/70 px-3.5 py-1.5 text-xs font-medium uppercase tracking-[0.16em] text-ink-500">
         <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>
         {ui.home.eyebrow}
       </p>
@@ -62,7 +62,7 @@ const waMessage =
         </a>
         <a
           href={ROUTES.about[locale]}
-          class="inline-flex items-center gap-2 rounded-full border border-ink-900/15 bg-white px-6 py-3.5 text-sm font-semibold text-ink-900 transition hover:border-brand-400 hover:text-brand-700"
+          class="inline-flex items-center gap-2 rounded-full border border-ink-900/15 bg-surface px-6 py-3.5 text-sm font-semibold text-ink-900 transition hover:border-brand-400 hover:text-brand-700"
         >
           {ui.home.secondary}
         </a>
@@ -128,7 +128,7 @@ const waMessage =
     </div>
     <a
       href={ROUTES.excursions[locale]}
-      class="inline-flex items-center gap-2 rounded-full border border-ink-900/15 bg-white px-5 py-2.5 text-sm font-semibold text-ink-900 transition hover:border-brand-400 hover:text-brand-700"
+      class="inline-flex items-center gap-2 rounded-full border border-ink-900/15 bg-surface px-5 py-2.5 text-sm font-semibold text-ink-900 transition hover:border-brand-400 hover:text-brand-700"
     >
       {ui.cta.seeAll} <span aria-hidden="true">→</span>
     </a>
@@ -146,7 +146,7 @@ const waMessage =
     <div class="mt-8 grid gap-5 md:grid-cols-2">
       <a
         href={`${ROUTES.excursions[locale]}?temporada=verano`}
-        class="group relative overflow-hidden rounded-card bg-ink-900 shadow-soft transition hover:shadow-lift"
+        class="group relative overflow-hidden rounded-card bg-ink-950 shadow-soft transition hover:shadow-lift"
       >
         <Image
           src={summer.data.cover}
@@ -165,7 +165,7 @@ const waMessage =
 
       <a
         href={`${ROUTES.excursions[locale]}?temporada=invierno`}
-        class="group relative overflow-hidden rounded-card bg-ink-900 shadow-soft transition hover:shadow-lift"
+        class="group relative overflow-hidden rounded-card bg-ink-950 shadow-soft transition hover:shadow-lift"
       >
         <Image
           src={winter.data.cover}
@@ -198,7 +198,7 @@ const waMessage =
       <p class="mt-4 text-ink-500">{about.intro[0]}</p>
       <a
         href={ROUTES.about[locale]}
-        class="mt-6 inline-flex items-center gap-2 rounded-full bg-ink-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-ink-800"
+        class="mt-6 inline-flex items-center gap-2 rounded-full bg-ink-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-ink-800"
       >
         {ui.home.aboutCta} <span aria-hidden="true">→</span>
       </a>

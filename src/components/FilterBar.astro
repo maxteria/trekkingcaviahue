@@ -38,7 +38,7 @@ const groups = [
 ];
 ---
 
-<div class="rounded-card border border-cream-300/80 bg-white/80 p-4 shadow-soft sm:p-5">
+<div class="rounded-card border border-cream-300/80 bg-surface/90 p-4 shadow-soft sm:p-5">
   <div class="flex flex-col gap-4">
     {
       groups.map((group) => (
@@ -50,7 +50,7 @@ const groups = [
             {group.options.map((option) => (
               <button
                 type="button"
-                class="cursor-pointer rounded-full border border-cream-300 bg-cream-50 px-3.5 py-1.5 text-sm font-medium text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700 aria-pressed:border-brand-500 aria-pressed:bg-brand-500 aria-pressed:text-white"
+                class="cursor-pointer rounded-full border border-cream-300 bg-cream-50 px-3.5 py-1.5 text-sm font-medium text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-700 aria-pressed:border-brand-500 aria-pressed:bg-brand-500 aria-pressed:text-white dark:bg-cream-100 dark:hover:border-brand-400"
                 data-value={option.value}
                 aria-pressed="false"
               >

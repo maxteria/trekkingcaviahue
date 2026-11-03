@@ -146,18 +146,25 @@ En `src/data/site.ts`: WhatsApp, email, Instagram y URL de la agencia. El botón
 - El OG por defecto (`public/og-default.jpg`) y los iconos (`favicon.png`, `apple-touch-icon.png`) ya están generados a partir del logo y de una foto del catálogo; si querés regenerarlos, usá `sharp` con el logo y una imagen 1200×630.
 - Cada ficha genera su propia imagen Open Graph 1200×630 en build.
 
-## Deploy en Cloudflare Pages
+## Deploy en Cloudflare
 
-1. Subí el repositorio a GitHub.
-2. En Cloudflare Pages: **Create a project → Connect to Git**.
-3. Configuración:
-   - Framework preset: **Astro**
-   - Build command: `npm run build`
-   - Build output directory: `dist`
-   - Node version: `22` (variable de entorno `NODE_VERSION=22`)
-4. Dominio: agregá `trekkingcaviahue.ar` y `www.trekkingcaviahue.ar`.
+El sitio corre como Worker con assets estáticos (`wrangler.json` declara `assets.directory = ./dist`).
 
-`public/_redirects` mantiene las URLs viejas de WordPress apuntando a las nuevas, y `public/robots.txt` declara el sitemap.
+- Producción: <https://trekkingcaviahue.maxteria.workers.dev>
+- Proyecto: `trekkingcaviahue` en la cuenta `31be01834f1bc853a9597775ca53f86c`.
+- Workers Builds está conectado al repo `maxteria/trekkingcaviahue`, rama `main`: cada push publica.
+- Comando de deploy: `npx wrangler deploy`. El build (`npm run build`) lo corre wrangler desde `wrangler.json`.
+- Node se fija con `.node-version` (`22`), así no depende de una variable del dashboard.
+
+Deploy manual desde tu máquina:
+
+```bash
+npm run build && npx wrangler deploy
+```
+
+`public/_redirects` mantiene las URLs viejas de WordPress apuntando a las nuevas (`/inicio/`, `/caviahue/`, `/contacto/`, `/wp-admin/*`, etc.), `public/robots.txt` declara el sitemap y `dist/404.html` se sirve con `not_found_handling: "404-page"`.
+
+Para el dominio propio hay que mover `trekkingcaviahue.ar` a Cloudflare (cambio de nameservers en el registrar) y agregarlo como custom domain del Worker. Ese paso es el que reemplaza el WordPress en producción.
 
 ## Pendientes
 

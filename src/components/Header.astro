@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import logo from '../assets/brand/logo.png';
 import { ROUTES, SITE, whatsappLink } from '../data/site';
 import { t, type Locale } from '../data/ui';
+import ThemeToggle from './ThemeToggle.astro';
 
 interface Props {
   locale: Locale;
@@ -57,6 +58,7 @@ const otherLocale = locale === 'es' ? 'en' : 'es';
     </nav>
 
     <div class="flex items-center gap-2">
+      <ThemeToggle />
       <a
         href={alternatePath}
         hreflang={otherLocale}

@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-display: 'Fraunces Variable', ui-serif, Georgia, 'Times New Roman', serif;
@@ -40,10 +42,50 @@
   --color-sand-300: #cbc3b2;
   --color-sand-400: #b0a693;
 
+  --color-surface: #ffffff;
+  --color-surface-soft: #fdf8ee;
+
   --radius-card: 1.75rem;
 
   --shadow-soft: 0 1px 2px rgb(46 48 56 / 0.04), 0 12px 32px -12px rgb(46 48 56 / 0.16);
   --shadow-lift: 0 2px 4px rgb(46 48 56 / 0.05), 0 24px 48px -20px rgb(46 48 56 / 0.28);
+}
+
+/* ─── Dark mode: override semantic tokens ─── */
+.dark {
+  --color-ink-950: #0d0e12;
+  --color-ink-900: #e4e4e8;
+  --color-ink-800: #c4c7d0;
+  --color-ink-700: #a3a7b0;
+  --color-ink-500: #8a8e98;
+  --color-ink-300: #4d515c;
+  --color-ink-100: #2e3038;
+
+  --color-cream-50: #131419;
+  --color-cream-100: #181a20;
+  --color-cream-200: #20222a;
+  --color-cream-300: #2a2d36;
+  --color-cream-400: #3a3e48;
+
+  --color-surface: #1a1c22;
+  --color-surface-soft: #20222a;
+
+  --color-brand-50: #2a1620;
+  --color-brand-100: #3a1f2a;
+  --color-brand-200: #4a2a36;
+  --color-brand-300: #6b3b4e;
+  --color-brand-400: #9c5470;
+
+  --color-gold-100: #2a2418;
+  --color-gold-200: #3a3018;
+  --color-gold-300: #5a4520;
+
+  --color-sand-200: #2a2a2e;
+  --color-sand-300: #3a3a3e;
+  --color-sand-400: #5a5a5e;
+
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.2), 0 12px 32px -12px rgb(0 0 0 / 0.4);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.25), 0 24px 48px -20px rgb(0 0 0 / 0.55);
 }
 
 @layer base {
@@ -61,9 +103,19 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  .dark body {
+    background-color: var(--color-ink-950);
+    color: var(--color-ink-100);
+  }
+
   ::selection {
     background-color: var(--color-brand-200);
     color: var(--color-ink-950);
+  }
+
+  .dark ::selection {
+    background-color: var(--color-brand-600);
+    color: #fff;
   }
 
   :focus-visible {
@@ -168,5 +220,15 @@
     height: 0.4rem;
     border-radius: 999px;
     background-color: var(--color-brand-400);
+  }
+
+  /* Theme transition — subtle, not on initial paint */
+  .theme-ready,
+  .theme-ready *,
+  .theme-ready *::before,
+  .theme-ready *::after {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 200ms;
+    transition-timing-function: ease;
   }
 }

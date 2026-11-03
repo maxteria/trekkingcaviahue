@@ -51,8 +51,17 @@ const blocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <link rel="alternate" hreflang="x-default" href={locale === 'es' ? canonical : alternate} />
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#d43967" />
+    <meta name="theme-color" content="#d43967" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#131419" media="(prefers-color-scheme: dark)" />
     <meta name="generator" content={Astro.generator} />
+
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
 
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content={SITE.name} />
@@ -69,7 +78,7 @@ const blocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
     {blocks.map((block) => <script type="application/ld+json" set:html={JSON.stringify(block)} />)}
   </head>
-  <body class="min-h-screen bg-cream-50 text-ink-900 antialiased">
+  <body class="theme-ready min-h-screen bg-cream-50 text-ink-900 antialiased">
     <a
       href="#contenido"
       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-brand-500 focus:px-5 focus:py-2 focus:text-sm focus:font-medium focus:text-white"

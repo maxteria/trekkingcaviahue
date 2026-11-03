@@ -31,7 +31,7 @@ const excursions = await getExcursions(locale);
       {excursions.map((entry, index) => <ExcursionCard excursion={entry} locale={locale} eager={index < 3} />)}
     </div>
 
-    <p class="mt-10 rounded-2xl border border-dashed border-cream-400 bg-white/60 px-5 py-6 text-center text-sm text-ink-500" data-catalog-empty hidden>
+    <p class="mt-10 rounded-2xl border border-dashed border-cream-400 bg-surface/60 px-5 py-6 text-center text-sm text-ink-500" data-catalog-empty hidden>
       {ui.catalog.empty}
     </p>
   </div>
