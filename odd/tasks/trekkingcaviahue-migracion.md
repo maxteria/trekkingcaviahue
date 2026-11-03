@@ -86,3 +86,12 @@ Branch: `main` (repo nuevo). Deploy: Cloudflare Pages. Runner: `npm run build` (
 - `git init -b main` y primer commit `caddf77` — `feat: migrate trekkingcaviahue.ar to a bilingual Astro catalog`.
 - 189 archivos versionados (8.606 líneas); `_backup/`, el ZIP original, `dist/`, `.astro/` y `node_modules/` quedan ignorados.
 - Sin remoto configurado todavía; el deploy en Cloudflare Pages requiere crear el repositorio en GitHub y autorizar el push.
+
+### L7 — Cloudflare Pages (deploy)
+
+- MCP de Cloudflare autenticado. Cuenta `Maxi69@gmail.com` → `31be01834f1bc853a9597775ca53f86c`.
+- Inspección: **0 zonas** y **0 proyectos de Pages** en la cuenta. `trekkingcaviahue.ar` no está en Cloudflare, así que el DNS sigue en el proveedor del WordPress actual.
+- Decisión del usuario: conectar por **GitHub** (no subida directa). Cloudflare no permite convertir un proyecto direct-upload a Git, por eso se elige antes de crear el proyecto.
+- `.node-version` = `22` versionado en el repo para fijar la versión de Node en el build de Pages (`bf45e01`).
+- Config de build: framework preset Astro, `npm run build`, salida `dist`, rama `main`.
+- El cambio de nameservers/dominio personalizado queda pendiente de aprobación explícita: es lo que da de baja el WordPress en producción.
